@@ -24,7 +24,7 @@
   register: converge_stat
 
 - name: Generate molecule.yml files | Link prepare.yml if present
-  when: converge_stat | bool
+  when: converge_stat.stat.exists | bool
   loop: "{{ generator_molecule_scenarios }}"
   file:
     state: link
@@ -37,7 +37,7 @@
   register: converge_stat
 
 - name: Generate molecule.yml files | Link converge.yml if present
-  when: converge_stat | bool
+  when: converge_stat.stat.exists | bool
   loop: "{{ generator_molecule_scenarios }}"
   file:
     state: link
@@ -50,7 +50,7 @@
   register: verify_stat
 
 - name: Generate molecule.yml files | Link verify.yml if present
-  when: converge_stat | bool
+  when: converge_stat.stat.exists | bool
   loop: "{{ generator_molecule_scenarios }}"
   file:
     state: link

@@ -1,0 +1,58 @@
+---
+- name: Include variables from meta/main.yml
+  include_vars:
+    file: "{{ generator_role_path }}/meta/main.yml"
+    name: meta
+
+- name: Generate molecule.yml files | Create Necessary Dirs
+  file:
+    path: "{{ generator_role_path }}/molecule/{{ item.name }}"
+    state: directory
+  loop: "{{ generator_molecule_scenarios + [ { 'name': 'default'} ] }}"
+
+- name: Generate molecule.yml files | Create molecule.yml files
+  template:
+    src: "molecule/{{ molecule_file.format }}/molecule.yml.j2"
+    dest: "{{ generator_role_path }}/molecule/{{ molecule_file.name }}/molecule.yml"
+  loop_control:
+    loop_var: molecule_file
+  loop: "{{ generator_molecule_scenarios }}"
+
+- name: Generate molecule.yml files | Check if prepare.yml is present
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/prepare.yml"
+  register: converge_stat
+
+- name: Generate molecule.yml files | Link prepare.yml if present
+  when: converge_stat | bool
+  loop: "{{ generator_molecule_scenarios }}"
+  file:
+    state: link
+    src: "{{ generator_role_path }}/molecule/default/prepare.yml"
+    dest: "{{ generator_role_path }}/molecule/{{ item.name }}/prepare.yml"
+
+- name: Generate molecule.yml files | Check if converge.yml is present
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/converge.yml"
+  register: converge_stat
+
+- name: Generate molecule.yml files | Link converge.yml if present
+  when: converge_stat | bool
+  loop: "{{ generator_molecule_scenarios }}"
+  file:
+    state: link
+    src: "{{ generator_role_path }}/molecule/default/converge.yml"
+    dest: "{{ generator_role_path }}/molecule/{{ item.name }}/converge.yml"
+
+- name: Generate molecule.yml files | Check if verify.yml is present
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/verify.yml"
+  register: verify_stat
+
+- name: Generate molecule.yml files | Link verify.yml if present
+  when: converge_stat | bool
+  loop: "{{ generator_molecule_scenarios }}"
+  file:
+    state: link
+    src: "{{ generator_role_path }}/molecule/default/verify.yml"
+    dest: "{{ generator_role_path }}/molecule/{{ item.name }}/verify.yml"

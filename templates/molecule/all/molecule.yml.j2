@@ -1,0 +1,70 @@
+---
+{{ ansible_managed | comment }}
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+    requirements-file: requirements.yml
+    force: "${MOLECULE_FORCE:-false}"
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+driver:
+  name: {{ molecule_file.driver | default("podman") }}
+platforms:
+{% for platform in meta.galaxy_info.platforms %}
+{% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{% for version in platform.versions %}
+{% if version == "all" %}
+{% for tag in generator_distribution_version_mapping[platform.name][version] %}
+{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and tag == "7" %}
+{% else %}
+  - name: "{{ generator_role_name }}-{{ generator_EL_override[tag] | lower }}-{{ tag | lower }}"
+    image: "quay.io/gotmax23/{{ generator_EL_override[tag] | lower }}-systemd:{{ tag | lower }}"
+{% endif %}
+{% endfor %}
+{% else %}
+{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and tag == "7" %}
+{% else %}
+  - name: "{{ generator_role_name }}-{{ generator_EL_override[version] }}-{{ version | lower }}"
+    image: "quay.io/gotmax23/{{ generator_EL_override[version] }}-systemd:{{ version | lower }}"
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% else %}
+{% for version in platform.versions %}
+{% if version == "all" %}
+{% for tag in generator_distribution_version_mapping[platform.name][version] %}
+{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and tag == "7" %}
+{% else %}
+  - name: "{{ generator_role_name }}-{{ platform.name | lower }}-{{ tag | lower }}"
+    image: "quay.io/gotmax23/{{ platform.name | lower }}-systemd:{{ tag | lower }}"
+{% endif %}
+{% endfor %}
+{% else %}
+{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and tag == "7" %}
+{% else %}
+  - name: "{{ generator_role_name }}-{{ platform.name | lower }}-{{ version | lower }}"
+    image: "quay.io/gotmax23/{{ platform.name | lower }}-systemd:{{ tag | lower }}"
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+    command: ""
+    pre_build_image: true
+{%- if molecule_file.driver is defined and molecule_file.driver == "docker" %}
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+      - /sys/fs/cgroup/systemd
+      - /var/lib/journal
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+{% endif %}
+
+
+# vim: set filetype=yaml:

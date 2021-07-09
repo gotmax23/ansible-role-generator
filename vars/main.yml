@@ -1,0 +1,46 @@
+---
+generator_role_path: "{{ lookup('env', 'PWD') }}"
+generator_role_name: "{{ lookup('env', 'PWD') | basename | regex_replace('ansible-role-') }}"
+
+generator_molecule_scenarios:
+  - name: all
+    format: all
+  - name: single
+    format: single
+  - name: all-docker
+    format: all
+    driver: docker
+  - name: single-docker
+    format: single
+    driver: docker
+
+generator_default_docker_image: debian
+generator_default_docker_tag: buster
+
+generator_distribution_version_mapping:
+  Archlinux:
+    all:
+      - any
+  Debian:
+    all:
+      - buster
+      - bullseye
+  EL:
+    all:
+      - 7
+      - 8
+  Fedora:
+    all:
+      - 33
+      - 34
+      - 35
+  opensuse:
+    all:
+      - 15.2
+      - 15.3
+      - tumbleweed
+  Ubuntu:
+    all:
+      - bionic
+      - focal
+      - hirsute

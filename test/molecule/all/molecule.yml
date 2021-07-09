@@ -1,0 +1,49 @@
+---
+#
+# Ansible managed
+#
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+    requirements-file: requirements.yml
+    force: "${MOLECULE_FORCE:-false}"
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+driver:
+  name: podman
+platforms:
+  - name: "test-archlinux-any"
+    image: "quay.io/gotmax23/archlinux-systemd:any"
+  - name: "test-debian-buster"
+    image: "quay.io/gotmax23/debian-systemd:buster"
+  - name: "test-debian-bullseye"
+    image: "quay.io/gotmax23/debian-systemd:bullseye"
+  - name: "test-el-7"
+    image: "quay.io/gotmax23/el-systemd:7"
+  - name: "test-el-8"
+    image: "quay.io/gotmax23/el-systemd:8"
+  - name: "test-fedora-33"
+    image: "quay.io/gotmax23/fedora-systemd:33"
+  - name: "test-fedora-34"
+    image: "quay.io/gotmax23/fedora-systemd:34"
+  - name: "test-fedora-35"
+    image: "quay.io/gotmax23/fedora-systemd:35"
+  - name: "test-opensuse-15.2"
+    image: "quay.io/gotmax23/opensuse-systemd:15.2"
+  - name: "test-opensuse-15.3"
+    image: "quay.io/gotmax23/opensuse-systemd:15.3"
+  - name: "test-opensuse-tumbleweed"
+    image: "quay.io/gotmax23/opensuse-systemd:tumbleweed"
+  - name: "test-ubuntu-bionic"
+    image: "quay.io/gotmax23/ubuntu-systemd:bionic"
+  - name: "test-ubuntu-focal"
+    image: "quay.io/gotmax23/ubuntu-systemd:focal"
+  - name: "test-ubuntu-hirsute"
+    image: "quay.io/gotmax23/ubuntu-systemd:hirsute"
+    command: ""
+    pre_build_image: true
+
+# vim: set filetype=yaml:

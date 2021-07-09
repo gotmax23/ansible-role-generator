@@ -14,9 +14,6 @@ generator_molecule_scenarios:
     format: single
     driver: docker
 
-generator_default_docker_image: debian
-generator_default_docker_tag: buster
-
 generator_distribution_version_mapping:
   Archlinux:
     all:

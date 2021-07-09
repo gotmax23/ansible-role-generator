@@ -1,0 +1,3 @@
+generator_default_docker_image: debian
+generator_default_docker_tag: buster
+generator_EL_no_7: true

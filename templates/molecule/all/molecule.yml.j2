@@ -18,14 +18,14 @@ platforms:
 {% for version in platform.versions %}
 {% if version == "all" %}
 {% for tag in generator_distribution_version_mapping[platform.name][version] %}
-{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and tag == "7" %}
+{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (tag == 7) %}
 {% else %}
   - name: "{{ generator_role_name }}-{{ generator_EL_override[tag] | lower }}-{{ tag | lower }}"
     image: "quay.io/gotmax23/{{ generator_EL_override[tag] | lower }}-systemd:{{ tag | lower }}"
 {% endif %}
 {% endfor %}
 {% else %}
-{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and version == "7" %}
+{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (version == 7) %}
 {% else %}
   - name: "{{ generator_role_name }}-{{ generator_EL_override[version] }}-{{ version | lower }}"
     image: "quay.io/gotmax23/{{ generator_EL_override[version] }}-systemd:{{ version | lower }}"
@@ -37,14 +37,14 @@ platforms:
 {% for version in platform.versions %}
 {% if version == "all" %}
 {% for tag in generator_distribution_version_mapping[platform.name][version] %}
-{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and tag == "7" %}
+{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (tag == 7) %}
 {% else %}
   - name: "{{ generator_role_name }}-{{ platform.name | lower }}-{{ tag | lower }}"
     image: "quay.io/gotmax23/{{ platform.name | lower }}-systemd:{{ tag | lower }}"
 {% endif %}
 {% endfor %}
 {% else %}
-{% if platform.name == "EL" and generator_EL_no_7 is defined and generator_EL_no_7 | bool and version == "7" %}
+{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (version == 7) %}
 {% else %}
   - name: "{{ generator_role_name }}-{{ platform.name | lower }}-{{ version | lower }}"
     image: "quay.io/gotmax23/{{ platform.name | lower }}-systemd:{{ version | lower }}"

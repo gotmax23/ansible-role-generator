@@ -14,54 +14,43 @@ driver:
   name: {{ molecule_file.driver | default("podman") }}
 platforms:
 {% for platform in meta.galaxy_info.platforms %}
+{% set name = {{ platform.name }} %}
+{# EL_Override #}
 {% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
 {% for version in platform.versions %}
+{# All_Override #}
 {% if version == "all" %}
 {% for tag in generator_distribution_version_mapping[platform.name][version] %}
-{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (tag == 7) %}
+{% set name = {{ generator_EL_override[tag] }} %}
+{% set version = {{ tag }} %}
+{% include 'platforms_item.yml.j2' %}
+{# else All_Override #}
 {% else %}
-  - name: "{{ generator_role_name }}-{{ generator_EL_override[tag] | lower }}-{{ tag | lower }}"
-    image: "quay.io/gotmax23/{{ generator_EL_override[tag] | lower }}-systemd:{{ tag | lower }}"
+{% set name = {{ generator_EL_override[tag] }} %}
+{% include 'platforms_item.yml.j2' %}
+{# end All_Override #}
 {% endif %}
 {% endfor %}
+{# else EL_Override #}
 {% else %}
-{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (version == 7) %}
+{% for version in platform.versions %}
+{# All_Override #}
+{% if version == "all" %}
+{% for tag in generator_distribution_version_mapping[platform.name][version] %}
+{% set version = {{ tag }} %}
+{% include 'platforms_item.yml.j2' %}
+{% endfor %}
+{# else All_Override #}
 {% else %}
-  - name: "{{ generator_role_name }}-{{ generator_EL_override[version] }}-{{ version | lower }}"
-    image: "quay.io/gotmax23/{{ generator_EL_override[version] }}-systemd:{{ version | lower }}"
+{% include 'platforms_item.yml.j2' %}
 {% endif %}
+{% endfor %}
+{# end EL_Override #}
 {% endif %}
 {% endfor %}
 
-{% else %}
-{% for version in platform.versions %}
-{% if version == "all" %}
-{% for tag in generator_distribution_version_mapping[platform.name][version] %}
-{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (tag == 7) %}
-{% else %}
-  - name: "{{ generator_role_name }}-{{ platform.name | lower }}-{{ tag | lower }}"
-    image: "quay.io/gotmax23/{{ platform.name | lower }}-systemd:{{ tag | lower }}"
-{% endif %}
-{% endfor %}
-{% else %}
-{% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (version == 7) %}
-{% else %}
-  - name: "{{ generator_role_name }}-{{ platform.name | lower }}-{{ version | lower }}"
-    image: "quay.io/gotmax23/{{ platform.name | lower }}-systemd:{{ version | lower }}"
-{% endif %}
-{% endif %}
-{% endfor %}
-{% endif %}
-{% endfor %}
-    command: ""
-    pre_build_image: true
-{%- if molecule_file.driver is defined and molecule_file.driver == "docker" %}
-    tmpfs:
-      - /run
-      - /run/lock
-      - /tmp
-      - /sys/fs/cgroup/systemd
-      - /var/lib/journal
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-{% endif %}
+{#
+
+# vim: set filetype=yaml.jinja2:
+
+#}

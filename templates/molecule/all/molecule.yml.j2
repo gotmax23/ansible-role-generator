@@ -13,44 +13,55 @@ lint: |
 driver:
   name: {{ molecule_file.driver | default("podman") }}
 platforms:
+{# for platform #}
 {% for platform in meta.galaxy_info.platforms %}
 {% set name = {{ platform.name }} %}
+
 {# EL_Override #}
 {% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{# for version_EL #}
 {% for version in platform.versions %}
-{# All_Override #}
+{# All_Override_EL #}
 {% if version == "all" %}
+{# for all_tag_EL #}
 {% for tag in generator_distribution_version_mapping[platform.name][version] %}
 {% set name = {{ generator_EL_override[tag] }} %}
 {% set version = {{ tag }} %}
 {% include 'platforms_item.yml.j2' %}
-{# else All_Override #}
+{# endfor all_tag_EL #}
+{% endfor %}
+{# else All_Override_EL #}
 {% else %}
 {% set name = {{ generator_EL_override[tag] }} %}
 {% include 'platforms_item.yml.j2' %}
-{# end All_Override #}
+{# end All_Override_EL #}
 {% endif %}
+{# endfor version_EL #}
 {% endfor %}
+
+
 {# else EL_Override #}
 {% else %}
+{# for version_REG #}
 {% for version in platform.versions %}
-{# All_Override #}
+{# All_Override_REG #}
 {% if version == "all" %}
+{# for all_tag_REG #}
 {% for tag in generator_distribution_version_mapping[platform.name][version] %}
 {% set version = {{ tag }} %}
 {% include 'platforms_item.yml.j2' %}
+{# endfor all_tag_REG #}
 {% endfor %}
-{# else All_Override #}
+{# else All_Override_REG #}
 {% else %}
 {% include 'platforms_item.yml.j2' %}
+{# end All_Override_REG #}
 {% endif %}
+{# endfor version_REG #}
 {% endfor %}
 {# end EL_Override #}
 {% endif %}
+
+
+{# endfor platform #}
 {% endfor %}
-
-{#
-
-# vim: set filetype=yaml.jinja2:
-
-#}

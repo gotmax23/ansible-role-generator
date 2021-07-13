@@ -18,7 +18,8 @@ platforms:
   - name: "test-${MOLECULE_IMAGE:-debian}-${MOLECULE_TAG:-buster}${TOX_ENVNAME}"
     image: "quay.io/gotmax23/${MOLECULE_IMAGE:-debian}-systemd:${MOLECULE_TAG:-buster}"
     command: ""
-    pre_build_image: true    tmpfs:
+    pre_build_image: true
+    tmpfs:
       - /run
       - /run/lock
       - /tmp
@@ -27,5 +28,10 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
 
-
-# vim: set filetype=yaml:
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+verifier:
+  name: ansible

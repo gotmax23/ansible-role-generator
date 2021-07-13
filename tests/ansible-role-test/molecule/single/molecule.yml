@@ -20,4 +20,10 @@ platforms:
     command: ""
     pre_build_image: true
 
-# vim: set filetype=yaml:
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+verifier:
+  name: ansible

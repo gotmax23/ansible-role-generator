@@ -27,6 +27,14 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
 {% endif %}
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+verifier:
+  name: ansible
 {#
 # vim: set filetype=yaml.jinja2:
 #}

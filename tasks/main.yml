@@ -4,6 +4,11 @@
     file: "{{ generator_role_path }}/meta/main.yml"
     name: meta
 
+- name: Copy License File
+  copy:
+    src: LICENSE.txt
+    dest: "{{ generator_role_path }}/LICENSE.txt"
+
 - name: Generate molecule files | Create Necessary Dirs
   file:
     path: "{{ generator_role_path }}/molecule/{{ item.name }}"
@@ -67,3 +72,21 @@
     state: link
     src: "{{ generator_role_path }}/molecule/default/verify.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/verify.yml"
+
+- name: Copy default files if not present
+  when:
+    - generator_default_files is defined
+    - generator_default_files is iterable
+  block:
+    - name: Copy default files if not present | Check presence
+      loop: "{{ generator_default_files }}"
+      register: generator_default_files_presence
+      stat:
+        path: "{{ generator_role_path }}/{{ item.dest | default(item) }}"
+
+    - name: Copy default files if not present | Copy file if needed
+      loop: "{{ generator_default_files_presence['results'] }}"
+      when: not item.stat.exists | bool
+      template:
+        src: "{{ item.src | default(item) }}"
+        dest: "{{ generator_role_path }}/{{ item.dest | default(item) }}"

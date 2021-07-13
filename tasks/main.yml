@@ -15,6 +15,27 @@
     state: directory
   loop: "{{ generator_molecule_scenarios + [ {'name': 'default'} ] }}"
 
+- name: Copy default files if not present
+  when:
+    - generator_default_files is defined
+    - generator_default_files is iterable
+  block:
+    - name: Copy default files if not present | Check presence
+      loop: "{{ generator_default_files }}"
+      register: generator_default_files_presence
+      stat:
+        path: "{{ generator_role_path }}/{{ item.dest | default(item) }}"
+
+    - name: Copy default files if not present | Copy file if needed
+      loop: "{{ generator_default_files_presence['results'] }}"
+      loop_control:
+        index_var: index
+        label: "{{ generator_default_files[index]['dest'] | default(generator_default_files[index]) }}"
+      when: not item.stat.exists | bool
+      template:
+        src: "{{ generator_default_files[index]['src'] | default('defaults/' ~ generator_default_files[index] ~ '.j2') }}"
+        dest: "{{ generator_role_path }}/{{ generator_default_files[index]['dest'] | default(generator_default_files[index]) }}"
+
 - name: Generate molecule files | Create molecule.yml files
   template:
     src: "molecule/{{ molecule_file.format }}/molecule.yml.j2"
@@ -72,21 +93,3 @@
     state: link
     src: "{{ generator_role_path }}/molecule/default/verify.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/verify.yml"
-
-- name: Copy default files if not present
-  when:
-    - generator_default_files is defined
-    - generator_default_files is iterable
-  block:
-    - name: Copy default files if not present | Check presence
-      loop: "{{ generator_default_files }}"
-      register: generator_default_files_presence
-      stat:
-        path: "{{ generator_role_path }}/{{ item.dest | default(item) }}"
-
-    - name: Copy default files if not present | Copy file if needed
-      loop: "{{ generator_default_files_presence['results'] }}"
-      when: not item.stat.exists | bool
-      template:
-        src: "{{ item.src | default(item) }}"
-        dest: "{{ generator_role_path }}/{{ item.dest | default(item) }}"

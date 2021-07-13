@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include gotmax23.test"
+      include_role:
+        name: "gotmax23.test"
+

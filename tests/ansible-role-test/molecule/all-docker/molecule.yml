@@ -2,11 +2,10 @@
 #
 # Ansible managed
 #
+---
 dependency:
   name: galaxy
   options:
-    role-file: requirements.yml
-    requirements-file: requirements.yml
     force: "${MOLECULE_FORCE:-false}"
 lint: |
   set -e
@@ -171,11 +170,9 @@ platforms:
       - /var/lib/journal
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
-
+---
 provisioner:
   name: ansible
   config_options:
     defaults:
       stdout_callback: yaml
-verifier:
-  name: ansible

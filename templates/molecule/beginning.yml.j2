@@ -1,0 +1,18 @@
+---
+dependency:
+  name: galaxy
+  options:
+{% if requirements_stat.stat.exists | bool %}
+    role-file: requirements.yml
+    requirements-file: requirements.yml
+{% endif %}
+    force: "${MOLECULE_FORCE:-{{ molecule_file.galaxy_force }}}"
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+driver:
+  name: {{ molecule_file.driver | default("podman") }}
+{#
+# vim: set filetype=yaml.jinja2:
+#}

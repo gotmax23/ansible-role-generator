@@ -2,11 +2,10 @@
 #
 # Ansible managed
 #
+---
 dependency:
   name: galaxy
   options:
-    role-file: requirements.yml
-    requirements-file: requirements.yml
     force: "${MOLECULE_FORCE:-true}"
 lint: |
   set -e
@@ -19,11 +18,9 @@ platforms:
     image: "quay.io/gotmax23/${MOLECULE_IMAGE:-debian}-systemd:${MOLECULE_TAG:-buster}"
     command: ""
     pre_build_image: true
-
+---
 provisioner:
   name: ansible
   config_options:
     defaults:
       stdout_callback: yaml
-verifier:
-  name: ansible

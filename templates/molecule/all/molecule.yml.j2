@@ -1,17 +1,6 @@
 ---
 {{ ansible_managed | comment }}
-dependency:
-  name: galaxy
-  options:
-    role-file: requirements.yml
-    requirements-file: requirements.yml
-    force: "${MOLECULE_FORCE:-false}"
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-driver:
-  name: {{ molecule_file.driver | default("podman") }}
+{% include 'molecule/beginning.yml.j2' %}
 platforms:
 {% for platform in meta.galaxy_info.platforms %}
 {% set name = platform.name %}
@@ -32,14 +21,7 @@ platforms:
 {% endif %}
 {% endfor %}
 {% endfor %}
-
-provisioner:
-  name: ansible
-  config_options:
-    defaults:
-      stdout_callback: yaml
-verifier:
-  name: ansible
+{% include 'molecule/end.yml.j2' %}
 {#
 # vim: set filetype=yaml.jinja2:
 #}

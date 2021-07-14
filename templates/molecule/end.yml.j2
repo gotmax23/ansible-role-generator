@@ -1,0 +1,13 @@
+---
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      stdout_callback: yaml
+{% if verify_stat.stat.exists | bool %}
+verifier:
+  name: ansible
+{% endif %}
+{#
+# vim: set filetype=yaml.jinja2:
+#}

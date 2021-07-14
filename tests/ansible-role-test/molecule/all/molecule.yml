@@ -2,11 +2,10 @@
 #
 # Ansible managed
 #
+---
 dependency:
   name: galaxy
   options:
-    role-file: requirements.yml
-    requirements-file: requirements.yml
     force: "${MOLECULE_FORCE:-false}"
 lint: |
   set -e
@@ -67,11 +66,9 @@ platforms:
     image: "quay.io/gotmax23/ubuntu-systemd:hirsute"
     command: ""
     pre_build_image: true
-
+---
 provisioner:
   name: ansible
   config_options:
     defaults:
       stdout_callback: yaml
-verifier:
-  name: ansible

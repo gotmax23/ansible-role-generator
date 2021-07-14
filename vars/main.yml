@@ -7,14 +7,18 @@ generator_namespace: gotmax23
 generator_molecule_scenarios:
   - name: all
     format: all
+    galaxy_force: "false"
   - name: single
     format: single
+    galaxy_force: "true"
   - name: all-docker
     format: all
     driver: docker
+    galaxy_force: "false"
   - name: single-docker
     format: single
     driver: docker
+    galaxy_force: "true"
 
 generator_distribution_version_mapping:
   Archlinux:

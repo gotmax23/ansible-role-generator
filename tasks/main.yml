@@ -36,6 +36,31 @@
         src: "{{ generator_default_files[index]['src'] | default('defaults/' ~ generator_default_files[index] ~ '.j2') }}"
         dest: "{{ generator_role_path }}/{{ generator_default_files[index]['dest'] | default(generator_default_files[index]) }}"
 
+- name: Check if requirements.yml is present
+  register: requirements_stat
+  stat:
+    path: "{{ generator_role_path }}/requirements.yml }}"
+
+- name: Generate molecule files | Check if default molecule.yml is present
+  register: default_molecule_yml_stat
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/molecule.yml"
+
+- name: Generate molecule files | Check if prepare.yml is present
+  register: prepare_stat
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/prepare.yml"
+
+- name: Generate molecule files | Check if converge.yml is present
+  register: converge_stat
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/converge.yml"
+
+- name: Generate molecule files | Check if verify.yml is present
+  register: verify_stat
+  stat:
+    path: "{{ generator_role_path }}/molecule/default/verify.yml"
+
 - name: Generate molecule files | Create molecule.yml files
   template:
     src: "molecule/{{ molecule_file.format }}/molecule.yml.j2"
@@ -44,21 +69,11 @@
     loop_var: molecule_file
   loop: "{{ generator_molecule_scenarios }}"
 
-- name: Generate molecule files | Check if default molecule.yml is present
-  stat:
-    path: "{{ generator_role_path }}/molecule/default/molecule.yml"
-  register: default_molecule_yml_stat
-
 - name: Generate molecule files | Link default molecule.yml if not present
   file:
     state: link
     src: "{{ generator_role_path }}/molecule/{{ generator_molecule_default_scenario }}/molecule.yml"
     dest: "{{ generator_role_path }}/molecule/default/molecule.yml"
-
-- name: Generate molecule files | Check if prepare.yml is present
-  stat:
-    path: "{{ generator_role_path }}/molecule/default/prepare.yml"
-  register: prepare_stat
 
 - name: Generate molecule files | Link prepare.yml if present
   when: prepare_stat.stat.exists | bool
@@ -68,11 +83,6 @@
     src: "{{ generator_role_path }}/molecule/default/prepare.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/prepare.yml"
 
-- name: Generate molecule files | Check if converge.yml is present
-  stat:
-    path: "{{ generator_role_path }}/molecule/default/converge.yml"
-  register: converge_stat
-
 - name: Generate molecule files | Link converge.yml if present
   when: converge_stat.stat.exists | bool
   loop: "{{ generator_molecule_scenarios }}"
@@ -80,11 +90,6 @@
     state: link
     src: "{{ generator_role_path }}/molecule/default/converge.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/converge.yml"
-
-- name: Generate molecule files | Check if verify.yml is present
-  stat:
-    path: "{{ generator_role_path }}/molecule/default/verify.yml"
-  register: verify_stat
 
 - name: Generate molecule files | Link verify.yml if present
   when: verify_stat.stat.exists | bool

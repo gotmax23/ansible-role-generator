@@ -4,37 +4,50 @@
     file: "{{ generator_role_path }}/meta/main.yml"
     name: meta
 
-- name: Copy License File
-  copy:
-    src: LICENSE.txt
-    dest: "{{ generator_role_path }}/LICENSE.txt"
-
 - name: Generate molecule files | Create Necessary Dirs
   file:
     path: "{{ generator_role_path }}/molecule/{{ item.name }}"
     state: directory
   loop: "{{ generator_molecule_scenarios + [ {'name': 'default'} ] }}"
 
-- name: Copy default files if not present
+- name: Create other necessary directories
   when:
-    - generator_default_files is defined
-    - generator_default_files is iterable
+    - generator_dirs is defined
+    - generator_dirs is iterable
+  loop: "{{ generator_directories }}"
+  file:
+    path: "{{ item }}"
+    state: directory
+
+- name: Copy default and generated files if not present
+  when:
+    - generator_files is defined
+    - generator_files is iterable
   block:
-    - name: Copy default files if not present | Check presence
-      loop: "{{ generator_default_files }}"
-      register: generator_default_files_presence
+    - name: Copy default files | Check presence
+      loop: "{{ generator_files }}"
+      register: generator_files_presence
       stat:
         path: "{{ generator_role_path }}/{{ item.dest | default(item) }}"
 
-    - name: Copy default files if not present | Copy file if needed
-      loop: "{{ generator_default_files_presence['results'] }}"
+    - name: Copy default files | Copy file if needed
+      loop: "{{ generator_files }}"
       loop_control:
         index_var: index
-        label: "{{ generator_default_files[index]['dest'] | default(generator_default_files[index]) }}"
-      when: not item.stat.exists | bool
+        label: "{{ item['dest'] }}"
+      when:
+        - (item['state'] is undefined) or (item['state'] in [ "present", "force" ])
+        - (item['state'] == "force") or (not generator_files_presence['results'][index]['stat']['exists'] | bool)
       template:
-        src: "{{ generator_default_files[index]['src'] | default('defaults/' ~ generator_default_files[index] ~ '.j2') }}"
-        dest: "{{ generator_role_path }}/{{ generator_default_files[index]['dest'] | default(generator_default_files[index]) }}"
+        src: "{{ item['src'] | default('defaults/' ~ item['dest'] ~ '.j2') }}"
+        dest: "{{ generator_role_path }}/{{ item['dest'] }}"
+
+    - name: Copy default files | Delete files if needed
+      loop: "{{ generator_files }}"
+      when: item['state'] is defined and item['state'] == "absent"
+      file:
+        path: "{{ generator_role_path }}/{{ item['dest'] }}"
+        state: absent
 
 - name: Check if requirements.yml is present
   register: requirements_stat

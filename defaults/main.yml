@@ -5,6 +5,7 @@ generator_molecule_default_scenario: all
 generator_files:
   - dest: "molecule/default/converge.yml"
     state: present
+  - dest: LICENSE.txt
+    state: absent
   - dest: LICENSE
     state: force
-

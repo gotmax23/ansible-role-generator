@@ -52,7 +52,7 @@
 - name: Check if requirements.yml is present
   register: requirements_stat
   stat:
-    path: "{{ generator_role_path }}/requirements.yml }}"
+    path: "{{ generator_role_path }}/requirements.yml"
 
 - name: Generate molecule files | Check if default molecule.yml is present
   register: default_molecule_yml_stat

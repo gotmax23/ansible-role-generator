@@ -14,7 +14,7 @@
   when:
     - generator_dirs is defined
     - generator_dirs is iterable
-  loop: "{{ generator_directories }}"
+  loop: "{{ generator_dirs }}"
   file:
     path: "{{ item }}"
     state: directory

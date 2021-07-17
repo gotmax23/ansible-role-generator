@@ -1,5 +1,5 @@
 generator_default_docker_image: debian
-generator_default_docker_tag: buster
+generator_default_docker_tag: latest
 generator_EL_no_7: true
 generator_molecule_default_scenario: all
 generator_files:

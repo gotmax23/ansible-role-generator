@@ -1,0 +1,80 @@
+---
+name: Run Molecule tests and linting
+
+'on':
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "{{ generator_molecule_workflow_cron }}"
+
+job:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Git Repo
+        uses: actions/checkout@v2
+
+      - name: "Set up Python 3.9"
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install pip packages
+        run: pip install molecule yamllint ansible-lint
+
+      - name: Run molecule lint
+        run: molecule lint -s single
+
+  test:
+    runs-on: ubuntu-20.04
+    needs:
+      - lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+{% for platform in meta.galaxy_info.platforms %}
+{% set name = platform.name %}
+{% for version in platform.versions %}
+{% if version == "all" %}
+{% for tag in generator_distribution_version_mapping[name][version] %}
+{% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{% set name = generator_EL_override[tag] %}
+{% endif %}
+{% set version = tag %}
+{% include 'workflow_platforms_item.yml.j2' %}
+{% endfor %}
+{% else %}
+{% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{% set name = generator_EL_override[version] %}
+{% endif %}
+{% include 'workflow_platforms_item.yml.j2' %}
+{% endif %}
+{% endfor %}
+{% endfor %}
+    steps:
+      - name: Checkout Git Repo
+        uses: actions/checkout@v2
+
+      - name: "Set up Python 3.9"
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install pip packages
+        run: pip install molecule molecule-podman ansible
+
+      - name: Run molecule test
+        run: molecule test -s single
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
+{% raw %}
+          MOLECULE_IMAGE: "${{ matrix.os.image }}"
+          MOLECULE_TAG: "${{ matrix.os.tag }}"
+{% endraw %}
+
+{#
+# vim: set filetype=yaml.jinja2:
+#}

@@ -14,3 +14,5 @@ generator_files:
     state: force
   - dest: .github/workflows/molecule.yml
     state: force
+  - dest: .ansible-lint
+    state: force

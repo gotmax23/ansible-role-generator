@@ -16,3 +16,5 @@ generator_files:
     state: force
   - dest: .ansible-lint
     state: force
+  - dest: .yamllint
+    state: force

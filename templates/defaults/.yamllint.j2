@@ -1,0 +1,20 @@
+---
+{{ ansible_managed | comment }}
+extends: default
+
+rule:
+  braces:
+    max-spaces-inside: 1
+    level: error
+  brackets:
+    max-spaces-inside: 1
+    level: error
+  line-length: disable
+
+ignore: |
+  .cache/
+
+# {{ "vim: set filetype=yaml:" }}
+{#
+# vim: set filetype=yaml.jinja2:
+#}

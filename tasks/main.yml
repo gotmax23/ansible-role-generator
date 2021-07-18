@@ -19,25 +19,17 @@
     path: "{{ item }}"
     state: directory
 
-- name: Copy default and generated files if not present
+- name: Copy default files
   when:
     - generator_files is defined
     - generator_files is iterable
   block:
-    - name: Copy default files | Check presence
-      loop: "{{ generator_files }}"
-      register: generator_files_presence
-      stat:
-        path: "{{ generator_role_path }}/{{ item.dest | default(item) }}"
-
     - name: Copy default files | Copy file if needed
       loop: "{{ generator_files }}"
       loop_control:
-        index_var: index
         label: "{{ item['dest'] }}"
       when:
         - (item['state'] is undefined) or (item['state'] in [ "present", "force" ])
-        - (item['state'] is defined and item['state'] == "force") or (not generator_files_presence['results'][index]['stat']['exists'] | bool)
       template:
         src: "{{ item['src'] | default('defaults/' ~ item['dest'] ~ '.j2') }}"
         dest: "{{ generator_role_path }}/{{ item['dest'] }}"

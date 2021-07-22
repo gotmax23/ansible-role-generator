@@ -1,0 +1,14 @@
+    command: ""
+    pre_build_image: true
+{% if molecule_file.driver is defined and molecule_file.driver == "docker" %}
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+      - /sys/fs/cgroup/systemd
+      - /var/lib/journal
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+{% else %}
+    systemd: true
+{% endif %}

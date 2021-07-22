@@ -4,18 +4,7 @@
 platforms:
   - name: "{{ generator_role_name }}-${MOLECULE_IMAGE:-{{ generator_default_docker_image }}}-${MOLECULE_TAG:-{{ generator_default_docker_tag }}}${TOX_ENVNAME}"
     image: "quay.io/gotmax23/${MOLECULE_IMAGE:-{{ generator_default_docker_image }}}-systemd:${MOLECULE_TAG:-{{ generator_default_docker_tag }}}"
-    command: ""
-    pre_build_image: true
-{% if molecule_file.driver is defined and molecule_file.driver == "docker" %}
-    tmpfs:
-      - /run
-      - /run/lock
-      - /tmp
-      - /sys/fs/cgroup/systemd
-      - /var/lib/journal
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-{% endif %}
+{% include 'molecule/platform_args.yml.j2' %}
 {% include 'molecule/end.yml.j2' %}
 {#
 # vim: set filetype=yaml.jinja2:

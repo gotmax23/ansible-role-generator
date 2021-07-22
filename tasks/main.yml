@@ -77,7 +77,7 @@
 - name: Generate molecule files | Link default molecule.yml if not present
   file:
     state: link
-    src: "{{ generator_role_path }}/molecule/{{ generator_molecule_default_scenario }}/molecule.yml"
+    src: "../{{ generator_molecule_default_scenario }}/molecule.yml"
     dest: "{{ generator_role_path }}/molecule/default/molecule.yml"
 
 - name: Generate molecule files | Link prepare.yml if present
@@ -85,7 +85,7 @@
   loop: "{{ generator_molecule_scenarios }}"
   file:
     state: link
-    src: "{{ generator_role_path }}/molecule/default/prepare.yml"
+    src: "../default/prepare.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/prepare.yml"
 
 - name: Generate molecule files | Link converge.yml if present
@@ -93,7 +93,7 @@
   loop: "{{ generator_molecule_scenarios }}"
   file:
     state: link
-    src: "{{ generator_role_path }}/molecule/default/converge.yml"
+    src: "../default/converge.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/converge.yml"
 
 - name: Generate molecule files | Link verify.yml if present
@@ -101,5 +101,5 @@
   loop: "{{ generator_molecule_scenarios }}"
   file:
     state: link
-    src: "{{ generator_role_path }}/molecule/default/verify.yml"
+    src: "../default/verify.yml"
     dest: "{{ generator_role_path }}/molecule/{{ item.name }}/verify.yml"

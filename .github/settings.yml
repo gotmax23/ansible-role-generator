@@ -1,0 +1,8 @@
+---
+#
+# Ansible managed
+#
+repository:
+  description: This role generates CI configuration, Molecule scenarios, linting configurations, and more for my other Ansible roles.
+  homepage: "https://galaxy.ansible.com/gotmax23/generator"
+  topics: ansible, molecule, ansible-role, role

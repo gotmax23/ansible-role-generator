@@ -1,0 +1,15 @@
+---
+- name: Generate files
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    generator_generate_molecule_files: false
+    generator_files:
+      - dest: .github/workflows/galaxy.yml
+      - dest: .github/settings.yml
+
+  roles:
+    - gotmax23.generator
+
+# vim: set filetype=yaml.ansible:

@@ -13,3 +13,4 @@ generator_files:
   - dest: .github/workflows/galaxy.yml
   - dest: .ansible-lint
   - dest: .yamllint
+  - dest: .github/settings.yml

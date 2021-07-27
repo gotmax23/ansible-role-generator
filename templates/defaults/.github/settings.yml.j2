@@ -1,6 +1,7 @@
 ---
+{% set tags = meta.galaxy_info.galaxy_tags|default([]) + generator_default_tags %}
 {{ ansible_managed | comment }}
 repository:
   description: {{ generator_role_description | default(meta.galaxy_info.description) }}
   homepage: "https://galaxy.ansible.com/{{ generator_namespace }}/{{ generator_role_name }}"
-  topics: {% if meta.galaxy_info.galaxy_tags is iterable and meta.galaxy_info.galaxy_tags is defined %}{% for tag in meta.galaxy_info.galaxy_tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %},{% endif %} ansible, molecule, ansible-role, role
+  topics: {% for tag in tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}

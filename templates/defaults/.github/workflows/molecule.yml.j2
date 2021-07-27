@@ -26,6 +26,9 @@ jobs:
 
       - name: Run molecule lint
         run: molecule lint -s single
+        env:
+          PY_COLORS: "1"
+          ANSIBLE_FORCE_COLOR: "1"
 
   test:
     runs-on: ubuntu-20.04
@@ -77,7 +80,7 @@ jobs:
         env:
           PY_COLORS: "1"
           ANSIBLE_FORCE_COLOR: "1"
-{% raw %}
+{%- raw %}
           MOLECULE_IMAGE: "${{ matrix.os.image }}"
           MOLECULE_TAG: "${{ matrix.os.tag }}"
 {% endraw %}

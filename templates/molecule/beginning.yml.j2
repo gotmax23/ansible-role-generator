@@ -5,7 +5,7 @@ dependency:
     role-file: requirements.yml
     requirements-file: requirements.yml
 {% endif %}
-    force: "${MOLECULE_FORCE:-{{ molecule_file.galaxy_force }}}"
+    force: "${GALAXY_FORCE:-{{ molecule_file.galaxy_force }}}"
 lint: |
   set -e
   yamllint .

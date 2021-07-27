@@ -10,5 +10,6 @@ generator_files:
     state: absent
   - dest: LICENSE
   - dest: .github/workflows/molecule.yml
+  - dest: .github/workflows/galaxy.yml
   - dest: .ansible-lint
   - dest: .yamllint

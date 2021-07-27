@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  role_name: generator
+
+  author: gotmax23
+
+  description: This role generates CI configuration, Molecule scenarios, linting configurations, and more for my other Ansible roles.
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: GenericUNIX
+      versions:
+        - all
+        - any
+    - name: GenericBSD
+      versions:
+        - all
+        - any
+    - name: GenericLinux
+      versions:
+        - all
+        - any
+  galaxy_tags:
+
+dependencies: []

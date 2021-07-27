@@ -3,6 +3,7 @@ generator_default_docker_tag: latest
 generator_EL_no_7: true
 generator_molecule_default_scenario: all
 generator_molecule_workflow_cron: 10 1 * * 0
+generator_generate_molecule_files: true
 generator_dirs:
   - .github/workflows
 generator_files:

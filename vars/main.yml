@@ -1,8 +1,7 @@
 ---
 generator_role_path: "{{ lookup('env', 'PWD') }}"
 generator_role_name: "{{ lookup('env', 'PWD') | basename | regex_replace('ansible-role-') }}"
-
-generator_namespace: gotmax23
+generator_galaxy_id_cmd: "set -o pipefail ; ansible-galaxy info {{ generator_namespace }}.{{ generator_role_name }} | grep '       id: ' | awk '{print $NF}'"
 
 generator_molecule_scenarios:
   - name: all

@@ -4,6 +4,13 @@
     file: "{{ generator_role_path }}/meta/main.yml"
     name: meta
 
+- name: Retrieve galaxy_id
+  register: generator_galaxy_id
+  changed_when: false
+  failed_when: false
+  shell:
+    cmd: "{{ generator_galaxy_id_cmd }}"
+
 - name: Generate molecule files | Create Necessary Dirs
   when: generator_generate_molecule_files | bool
   file:

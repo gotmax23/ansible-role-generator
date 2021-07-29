@@ -16,5 +16,6 @@ generator_files:
   - dest: .ansible-lint
   - dest: .yamllint
   - dest: .github/settings.yml
+  - dest: README.md
 
 generator_default_tags: [ "ansible", "molecule", "ansible-role", "role" ]

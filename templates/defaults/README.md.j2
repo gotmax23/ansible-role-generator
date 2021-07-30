@@ -5,7 +5,7 @@
 {% set generator_galaxy_id = _generator_galaxy_id.stdout | default('unset') %}
 {% macro _platform_versions(platform) %}
 {% if platform.versions[0] == "all" %}
-{{ generator_distribution_version_mapping[name][version] | join(', ') }}
+{{ generator_distribution_version_mapping[platform.name]["all"] | join(', ') }}
 {% else %}
 {{ platform.versions | join(', ') }}
 {%- endif %}
@@ -45,7 +45,7 @@ This role is compatible with the following distros:
 |distro|versions|
 |------|--------|
 {% for platform in meta.galaxy_info.platforms %}
-|{{ platform.name }}|{{ _platform_versions(platform) }}|
+|{{ platform.name }}|{{ _platform_versions(platform) | regex_replace("\n")-}}|
 {% endfor %}
 
 ## License

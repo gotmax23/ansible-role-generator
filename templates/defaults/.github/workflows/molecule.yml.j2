@@ -20,9 +20,13 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.9"
+{% include "cache_include.yml.j2" %}
 
       - name: Install pip packages
-        run: pip install molecule molecule-podman ansible yamllint ansible-lint
+        run: |
+          pip3 install -U pip
+          pip3 install wheel
+          pip3 install molecule molecule-podman ansible yamllint ansible-lint
 
       - name: Run molecule lint
         run: molecule lint -s single
@@ -65,9 +69,13 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.9"
+{% include "cache_include.yml.j2" %}
 
       - name: Install pip packages
-        run: pip install molecule molecule-podman ansible
+        run: |
+          pip3 install -U pip
+          pip3 install wheel
+          pip3 install molecule molecule-podman ansible
 
       # This is necessary to allow running systemd in rootless containers.
       - name: Start systemd user service

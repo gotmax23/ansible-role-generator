@@ -16,9 +16,13 @@ jobs:
 
       - name: "Set up Python 3.9"
         uses: actions/setup-python@v2
+{% include "cache_include.yml.j2" %}
 
       - name: Install pip packages
-        run: pip install ansible-core
+        run: |
+          pip3 install -U pip
+          pip3 install wheel
+          pip3 install ansible-core
 
       - name: Galaxy import
 {%- raw %}

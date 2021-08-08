@@ -13,10 +13,10 @@
 
 - name: Generate molecule files | Create Necessary Dirs
   when: generator_generate_molecule_files | bool
+  loop: "{{ generator_molecule_scenarios + [ {'name': 'default'}, {'name': 'playbooks'} ] }}"
   file:
     path: "{{ generator_role_path }}/molecule/{{ item.name }}"
     state: directory
-  loop: "{{ generator_molecule_scenarios + [ {'name': 'default'} ] }}"
 
 - name: Create other necessary directories
   when:
@@ -34,10 +34,10 @@
       slurp:
         src: "{{ generator_role_path }}/defaults/main.yml"
 
-    - name: Slurp molecule/default/converge.yml
+    - name: "Slurp {{ generator_molecule_playbook_dir }}/converge.yml"
       register: generator_converge
       slurp:
-        src: "{{ generator_role_path }}/molecule/default/converge.yml"
+        src: "{{ generator_role_path }}/{{ generator_molecule_playbook_dir }}/converge.yml"
 
     - name: Check if generator/example_playbook.yml is present
       register: generator_example_playbook_presence

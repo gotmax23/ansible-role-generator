@@ -7,6 +7,7 @@ generator_molecule_workflow_cron: "15 0 * * 0"
 generator_pip_cache_workflow_cron: "0 0 * * 0"
 generator_generate_molecule_files: true
 generator_readme_template: "defaults/README.md.j2"
+generator_molecule_playbook_dir: "molecule/playbooks"
 generator_dirs:
   - .github/workflows
 generator_files:

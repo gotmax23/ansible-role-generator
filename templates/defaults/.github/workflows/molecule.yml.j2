@@ -6,9 +6,11 @@ name: Lint code and run Molecule tests
   push:
     paths-ignore:
       - README.md
+      - .github/settings.yml
   pull_request:
     paths-ignore:
       - README.md
+      - .github/settings.yml
   workflow_dispatch:
   schedule:
     - cron: "{{ generator_molecule_workflow_cron }}"

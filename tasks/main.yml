@@ -55,6 +55,24 @@
       set_fact:
         generator_example_playbook: "{{ generator_converge }}"
 
+    - name: Check for install_methods template
+      register: generator_install_methods
+      stat:
+        path: "{{ generator_role_path }}/.generator/install_methods.md"
+
+- name: Generate README
+  block:
+    - name: Copy README template if needed
+      when: generator_copy_readme_template | bool
+      copy:
+        src: templates/README.md.j2
+        dest: "{{ generator_role_path }}/.generator/README.md.j2"
+
+    - name: Template README
+      template:
+        src: "{{ generator_role_path }}/.generator/README.md.j2"
+        dest: "{{ generator_role_path }}/README.md"
+
 - name: Copy default files
   when:
     - generator_files is defined
@@ -90,16 +108,6 @@
       stat:
         path: "{{ generator_role_path }}/molecule/default/molecule.yml"
 
-    - name: Generate molecule files | Check if prepare.yml is present
-      register: prepare_stat
-      stat:
-        path: "{{ generator_role_path }}/molecule/default/prepare.yml"
-
-    - name: Generate molecule files | Check if converge.yml is present
-      register: converge_stat
-      stat:
-        path: "{{ generator_role_path }}/molecule/default/converge.yml"
-
     - name: Generate molecule files | Check if verify.yml is present
       register: verify_stat
       stat:
@@ -118,27 +126,3 @@
         state: link
         src: "../{{ generator_molecule_default_scenario }}/molecule.yml"
         dest: "{{ generator_role_path }}/molecule/default/molecule.yml"
-
-    - name: Generate molecule files | Link prepare.yml if present
-      when: prepare_stat.stat.exists | bool
-      loop: "{{ generator_molecule_scenarios }}"
-      file:
-        state: link
-        src: "../default/prepare.yml"
-        dest: "{{ generator_role_path }}/molecule/{{ item.name }}/prepare.yml"
-
-    - name: Generate molecule files | Link converge.yml if present
-      when: converge_stat.stat.exists | bool
-      loop: "{{ generator_molecule_scenarios }}"
-      file:
-        state: link
-        src: "../default/converge.yml"
-        dest: "{{ generator_role_path }}/molecule/{{ item.name }}/converge.yml"
-
-    - name: Generate molecule files | Link verify.yml if present
-      when: verify_stat.stat.exists | bool
-      loop: "{{ generator_molecule_scenarios }}"
-      file:
-        state: link
-        src: "../default/verify.yml"
-        dest: "{{ generator_role_path }}/molecule/{{ item.name }}/verify.yml"

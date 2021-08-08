@@ -6,10 +6,11 @@ generator_molecule_default_scenario: all
 generator_molecule_workflow_cron: "15 0 * * 0"
 generator_pip_cache_workflow_cron: "0 0 * * 0"
 generator_generate_molecule_files: true
-generator_readme_template: "defaults/README.md.j2"
+generator_copy_readme_template: true
 generator_molecule_playbook_dir: "molecule/playbooks"
 generator_dirs:
   - .github/workflows
+  - .generator
 generator_files:
   - dest: LICENSE.txt
     state: absent
@@ -20,7 +21,5 @@ generator_files:
   - dest: .ansible-lint
   - dest: .yamllint
   - dest: .github/settings.yml
-  - src: "{{ generator_readme_template }}"
-    dest: README.md
 
 generator_default_tags: [ "ansible", "molecule", "ansible-role", "role" ]

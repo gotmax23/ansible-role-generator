@@ -39,16 +39,16 @@
       slurp:
         src: "{{ generator_role_path }}/{{ generator_molecule_playbook_dir }}/converge.yml"
 
-    - name: Check if generator/example_playbook.yml is present
-      register: generator_example_playbook_presence
+    - name: Check if .generator/playbook.yml is present
+      register: generator_example_playbook_stat
       stat:
-        path: generator/example_playbook.yml
+        path: "{{ generator_example_playbook_path }}"
 
-    - name: Slurp generator/example_playbook.yml if present
+    - name: Slurp .generator/playbook.yml if present
       register: generator_example_playbook
       when: generator_example_playbook_presence.stat.exists | bool
       slurp:
-        src: "{{ generator_role_path }}/generator/example_playbook.yml"
+        src: "{{ generator_example_playbook_path }}"
 
     - name: Override generator_example_playbook if needed
       when: not generator_example_playbook_presence.stat.exists | bool

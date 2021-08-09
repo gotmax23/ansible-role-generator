@@ -46,6 +46,8 @@ generator_pip_cache_workflow_cron: "0 0 * * 0"
 # role-specific modifications.
 generator_copy_readme_template: true
 
+generator_example_playbook_path: "{{ generator_role_path }}/.generator/playbook.yml"
+
 generator_epel_required: false
 
 # Instead of creating seperate `prepare`, `converge`, and `verify` playbooks for

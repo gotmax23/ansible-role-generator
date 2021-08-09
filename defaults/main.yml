@@ -1,16 +1,65 @@
+---
+# Set namespace which is used for Github and Ansible Galaxy
 generator_namespace: gotmax23
+
+# Set this to `false` to disable creating the Molecule files
+generator_generate_molecule_files: true
+
+# This role generates multiple scenarios:
+# - `single` tests the role with one distro and version at time using Podman
+# - `single-docker` does the same, but with Docker instead of Podman.
+# - `all` tests the role against all the supported distros at once.
+# - `all-docker` is the same as all, but with Docker.
+
+# Use this variable to select the default, which will be used if you don't use
+# `-s scenario_name`. The role acomplishes this by symlinking the scenario's
+# `molecule.yml` file to `molecule/default`.
+generator_molecule_default_scenario: all
+
+# Set default image and tag for `single` molecule scenario
 generator_default_docker_image: debian
 generator_default_docker_tag: latest
+
+# Skip Enterprise Linux 7 on `all` molecule scenario.
+# I do this because I use Cgroups V2, but EL 7's ancient version of Systemd doesn't
+# support it.
 generator_EL_no_7: true
-generator_molecule_default_scenario: all
+
+# Cronjob schedule for Molecule Github Actions workflow
 generator_molecule_workflow_cron: "15 0 * * 0"
+
+# Cronjob schedule for Pip cache workflow. By doing it, we don't have to wait
+# for Github Actions to recomplile Ansible every run.
 generator_pip_cache_workflow_cron: "0 0 * * 0"
-generator_generate_molecule_files: true
+
+# Background:
+# The generator role provides a README template that is copied to the
+# `.generator/README.md.j2` in the target role and then uses that as the
+# template `src`.
+# This fixes two problems:
+# 1. It makes it easier to override the template if needed.
+# 2. This allows us to keep the main template and role specific Jinja2 includes in
+# the same directory.
+
+# Whether or not to overwrite "{{ role_path }}/.generator/README.md.j2" file
+# before creating the README. When set to false, this allows us to make
+# role-specific modifications.
 generator_copy_readme_template: true
+
+# Instead of creating seperate `prepare`, `converge`, and `verify` playbooks for
+# each scenario, they are kept in a seperate directory. This variable tells
+# Molecule where to find these playbooks.
 generator_molecule_playbook_dir: "molecule/playbooks"
+
+# List of directories to create before templating files.
 generator_dirs:
   - .github/workflows
   - .generator
+
+# List of files to template. When `src` is not specified, the role uses this
+# pattern to find the `src` path: "{{ defaults/' ~ item['dest'] ~ '.j2' }}".
+# For example, the template for `LICENSE` is located is located at
+# `templates/defaults/LICENSE.j2`.
 generator_files:
   - dest: LICENSE.txt
     state: absent
@@ -21,5 +70,10 @@ generator_files:
   - dest: .ansible-lint
   - dest: .yamllint
   - dest: .github/settings.yml
+
+# This role creates a `.github/settings.yml` file for use with the
+# [Probot Settings plugin](https://github.com/probot/settings) to set the description,
+# homepage, and tags for the Github repository. In addition to using the tags
+# from each target role's `meta/main.yml`, it uses these default tags.
 
 generator_default_tags: [ "ansible", "molecule", "ansible-role", "role" ]

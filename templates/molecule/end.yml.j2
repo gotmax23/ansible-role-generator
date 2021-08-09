@@ -11,6 +11,15 @@ provisioner:
 verifier:
   name: ansible
 {% endif %}
+{% if generator_molecule_scenario is defined %}
+scenario:
+{% if generator_molecule_scenario.test_sequence is defined %}
+  test_sequence:
+{% for step in generator_molecule_scenario.test_sequence %}
+    - {{ step }}
+{% endfor %}
+{% endif %}
+{% endif %}
 {#
 # vim: set filetype=yaml.jinja2:
 #}

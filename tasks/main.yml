@@ -46,12 +46,12 @@
 
     - name: Slurp .generator/playbook.yml if present
       register: generator_example_playbook
-      when: generator_example_playbook_presence.stat.exists | bool
+      when: generator_example_playbook_stat.stat.exists | bool
       slurp:
         src: "{{ generator_example_playbook_path }}"
 
     - name: Override generator_example_playbook if needed
-      when: not generator_example_playbook_presence.stat.exists | bool
+      when: not generator_example_playbook_stat.stat.exists | bool
       set_fact:
         generator_example_playbook: "{{ generator_converge }}"
 

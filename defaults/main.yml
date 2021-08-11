@@ -67,6 +67,8 @@ generator_dirs:
 generator_files:
   - dest: LICENSE.txt
     state: absent
+  - dest: .travis.yml
+    state: absent
   - dest: LICENSE
   - dest: .github/workflows/molecule.yml
   - dest: .github/workflows/galaxy.yml

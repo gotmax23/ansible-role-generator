@@ -55,6 +55,12 @@
       set_fact:
         generator_example_playbook: "{{ generator_converge }}"
 
+    - name: Slurp .generator/links.md if present
+      failed_when: false
+      register: generator_links_md
+      ansible.builtin.slurp:
+        src: "{{ generator_role_path }}/.generator/links.md"
+
     - name: Check for install_methods template
       register: generator_install_methods
       stat:

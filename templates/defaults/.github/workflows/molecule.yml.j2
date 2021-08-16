@@ -50,22 +50,22 @@ jobs:
         os:
 {% for platform in meta.galaxy_info.platforms %}
 {% set name = platform.name %}
-{% for version in platform.versions %}
-{% if version == "all" %}
-{% for tag in generator_distribution_version_mapping[name][version] %}
-{% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{%   for version in platform.versions %}
+{%     if version == "all" %}
+{%       for tag in generator_distribution_version_mapping[name][version] %}
+{%         if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
 {% set name = generator_EL_override[tag] %}
-{% endif %}
+{%         endif %}
 {% set version = tag %}
 {% include 'workflow_platforms_item.yml.j2' %}
-{% endfor %}
-{% else %}
-{% if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{%       endfor %}
+{%     else %}
+{%       if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
 {% set name = generator_EL_override[version] %}
-{% endif %}
+{%       endif %}
 {% include 'workflow_platforms_item.yml.j2' %}
-{% endif %}
-{% endfor %}
+{%     endif %}
+{%   endfor %}
 {% endfor %}
     steps:
       - name: Checkout Git Repo

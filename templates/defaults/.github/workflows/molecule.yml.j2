@@ -47,26 +47,44 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+{% if generator_molecule_wflow_test.matrix is defined %}
+{{ generator_molecule_wflow_test.matrix | to_nice_yaml | indent(width=8, first=true) }}
+{%- endif %}
+{% if generator_molecule_wflow_test.matrix.os is not defined %}
         os:
-{% for platform in meta.galaxy_info.platforms %}
-{% set name = platform.name %}
-{%   for version in platform.versions %}
-{%     if version == "all" %}
-{%       for tag in generator_distribution_version_mapping[name][version] %}
+{%   for platform in meta.galaxy_info.platforms %}
+{%   set name = platform.name %}
+{%     for version in platform.versions %}
+{%       if version == "all" %}
+{%         for tag in generator_distribution_version_mapping[name][version] %}
+{%           if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
+{%   set name = generator_EL_override[tag] %}
+{%           endif %}
+{%   set version = tag %}
+{%   include 'workflow_platforms_item.yml.j2' %}
+{%         endfor %}
+{%       else %}
 {%         if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
-{% set name = generator_EL_override[tag] %}
+{%   set name = generator_EL_override[version] %}
 {%         endif %}
-{% set version = tag %}
-{% include 'workflow_platforms_item.yml.j2' %}
-{%       endfor %}
-{%     else %}
-{%       if platform.name == "EL" and generator_EL_override is defined and generator_EL_override is iterable %}
-{% set name = generator_EL_override[version] %}
+{%   include 'workflow_platforms_item.yml.j2' %}
 {%       endif %}
-{% include 'workflow_platforms_item.yml.j2' %}
-{%     endif %}
+{%     endfor %}
 {%   endfor %}
-{% endfor %}
+{%   endif %}
+    env:
+      PY_COLORS: "1"
+      ANSIBLE_FORCE_COLOR: "1"
+{%- raw %}
+      image: "${{ matrix.os.image }}"
+      tag: "${{ matrix.os.tag }}"
+{% endraw %}
+{%- if generator_molecule_wflow_test.env is defined %}
+{%    for env in generator_molecule_wflow_test.env | dict2items %}
+      {{ env.key }}: "{{ env.value }}"{{ "\n" if not loop.last }}
+{%-   endfor %}
+{%- endif %}
+
     steps:
       - name: Checkout Git Repo
         uses: actions/checkout@v2
@@ -88,16 +106,14 @@ jobs:
         run: |
           loginctl enable-linger runner
           sleep 1
-
+{% if generator_molecule_wflow_test.steps is defined %}
+{{ generator_molecule_wflow_test.steps | to_nice_yaml(indent=2) | indent(width=6, first=true) }}
+{% endif %}
+{% if generator_molecule_wflow_test.skip_test_step is defined and generator_molecule_wflow_test.skip_test_step | bool %}
+{% else %}
       - name: Run molecule test
         run: molecule test -s single
-        env:
-          PY_COLORS: "1"
-          ANSIBLE_FORCE_COLOR: "1"
-{%- raw %}
-          MOLECULE_IMAGE: "${{ matrix.os.image }}"
-          MOLECULE_TAG: "${{ matrix.os.tag }}"
-{% endraw %}
+{% endif %}
 {#
 # vim: set filetype=yaml.jinja2:
 #}

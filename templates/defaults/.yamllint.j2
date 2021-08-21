@@ -13,6 +13,9 @@ rules:
 
 ignore: |
   .cache/
+{% if generator_molecule_wflow_test is defined %}
+  .github/workflows/molecule.yml
+{% endif %}
 
 # {{ "vim: set filetype=yaml:" }}
 {#

@@ -2,7 +2,7 @@
 {{ ansible_managed | comment }}
 {% include 'molecule/beginning.yml.j2' %}
 platforms:
-  - name: "{{ generator_role_name }}-${image:-{{ generator_default_docker_image }}}-${tag:-{{ generator_default_docker_tag }}}${TOX_ENVNAME}"
+  - name: "{{ generator_role_name }}-${MOLECULE_SCENARIO_NAME}-${image:-{{ generator_default_docker_image }}}-${tag:-{{ generator_default_docker_tag }}}${TOX_ENVNAME}"
     image: "quay.io/gotmax23/${image:-{{ generator_default_docker_image }}}-systemd:${tag:-{{ generator_default_docker_tag }}}"
 {% include 'molecule/platform_args.yml.j2' %}
 {% include 'molecule/end.yml.j2' %}

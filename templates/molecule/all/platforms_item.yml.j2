@@ -1,6 +1,6 @@
 {% if (platform.name == "EL") and (generator_EL_no_7 is defined) and (generator_EL_no_7 | bool) and (version == 7) %}
 {% else %}
-  - name: "{{ generator_role_name }}-{{ name | lower }}-{{ version | lower }}"
+  - name: "{{ generator_role_name }}-${MOLECULE_SCENARIO_NAME}-{{ name | lower }}-{{ version | lower }}"
     image: "quay.io/gotmax23/{{ name | lower }}-systemd:{{ version | lower }}"
 {% include 'molecule/platform_args.yml.j2' %}
 {% endif %}

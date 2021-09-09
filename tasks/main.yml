@@ -1,6 +1,6 @@
 ---
 - name: Include variables from meta/main.yml
-  include_vars:
+  ansible.builtin.include_vars:
     file: "{{ generator_role_path }}/meta/main.yml"
     name: meta
 
@@ -8,13 +8,13 @@
   register: _generator_galaxy_id
   changed_when: false
   failed_when: false
-  shell:
+  ansible.builtin.shell:
     cmd: "{{ generator_galaxy_id_cmd }}"
 
 - name: Generate molecule files | Create Necessary Dirs
   when: generator_generate_molecule_files | bool
   loop: "{{ generator_molecule_scenarios + [ {'name': 'default'}, {'name': 'playbooks'} ] }}"
-  file:
+  ansible.builtin.file:
     path: "{{ generator_role_path }}/molecule/{{ item.name }}"
     state: directory
 
@@ -23,12 +23,12 @@
     - generator_dirs is defined
     - generator_dirs is iterable
   loop: "{{ generator_dirs }}"
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
 
 - name: Generate generator_molecule_workflow_cron file
-  template:
+  ansible.builtin.template:
     src: generator_molecule_workflow_cron.j2
     dest: "{{ generator_role_path }}/.generator/generator_molecule_workflow_cron"
     # Do not overwrite if it already exists
@@ -38,28 +38,28 @@
   block:
     - name: Slurp defaults/main.yml
       register: generator_defaults
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ generator_role_path }}/defaults/main.yml"
 
     - name: "Slurp {{ generator_molecule_playbook_dir }}/converge.yml"
       register: generator_converge
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ generator_role_path }}/{{ generator_molecule_playbook_dir }}/converge.yml"
 
     - name: Check if .generator/playbook.yml is present
       register: generator_example_playbook_stat
-      stat:
+      ansible.builtin.stat:
         path: "{{ generator_example_playbook_path }}"
 
     - name: Slurp .generator/playbook.yml if present
       register: generator_example_playbook
       when: generator_example_playbook_stat.stat.exists | bool
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ generator_example_playbook_path }}"
 
     - name: Override generator_example_playbook if needed
       when: not generator_example_playbook_stat.stat.exists | bool
-      set_fact:
+      ansible.builtin.set_fact:
         generator_example_playbook: "{{ generator_converge }}"
 
     - name: Slurp .generator/links.md if present
@@ -70,19 +70,19 @@
 
     - name: Check for install_methods template
       register: generator_install_methods
-      stat:
+      ansible.builtin.stat:
         path: "{{ generator_role_path }}/.generator/install_methods.md"
 
 - name: Generate README
   block:
     - name: Copy README template if needed
       when: generator_copy_readme_template | bool
-      copy:
+      ansible.builtin.copy:
         src: templates/README.md.j2
         dest: "{{ generator_role_path }}/.generator/README.md.j2"
 
     - name: Template README
-      template:
+      ansible.builtin.template:
         src: "{{ generator_role_path }}/.generator/README.md.j2"
         dest: "{{ generator_role_path }}/README.md"
 
@@ -97,20 +97,20 @@
         label: "{{ item['dest'] }}"
       when:
         - (item['state'] is undefined) or (item['state'] in [ "present", "force" ])
-      template:
+      ansible.builtin.template:
         src: "{{ item['src'] | default('defaults/' ~ item['dest'] ~ '.j2') }}"
         dest: "{{ generator_role_path }}/{{ item['dest'] }}"
 
     - name: Copy default files | Delete files if needed
       loop: "{{ generator_files }}"
       when: item['state'] is defined and item['state'] == "absent"
-      file:
+      ansible.builtin.file:
         path: "{{ generator_role_path }}/{{ item['dest'] }}"
         state: absent
 
 - name: Check if requirements.yml is present
   register: requirements_stat
-  stat:
+  ansible.builtin.stat:
     path: "{{ generator_role_path }}/requirements.yml"
 
 - name: Generate molecule files
@@ -118,16 +118,16 @@
   block:
     - name: Generate molecule files | Check if default molecule.yml is present
       register: default_molecule_yml_stat
-      stat:
+      ansible.builtin.stat:
         path: "{{ generator_role_path }}/molecule/default/molecule.yml"
 
     - name: Generate molecule files | Check if verify.yml is present
       register: verify_stat
-      stat:
+      ansible.builtin.stat:
         path: "{{ generator_role_path }}/molecule/default/verify.yml"
 
     - name: Generate molecule files | Create molecule.yml files
-      template:
+      ansible.builtin.template:
         src: "molecule/{{ molecule_file.format }}/molecule.yml.j2"
         dest: "{{ generator_role_path }}/molecule/{{ molecule_file.name }}/molecule.yml"
       loop_control:
@@ -135,7 +135,7 @@
       loop: "{{ generator_molecule_scenarios }}"
 
     - name: Generate molecule files | Link default molecule.yml if not present
-      file:
+      ansible.builtin.file:
         state: link
         src: "../{{ generator_molecule_default_scenario }}/molecule.yml"
         dest: "{{ generator_role_path }}/molecule/default/molecule.yml"

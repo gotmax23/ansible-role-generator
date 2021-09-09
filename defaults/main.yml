@@ -26,7 +26,7 @@ generator_default_docker_tag: latest
 generator_EL_no_7: true
 
 # Cronjob schedule for Molecule Github Actions workflow
-generator_molecule_workflow_cron: "15 0 * * 0"
+generator_molecule_workflow_cron: "{{ lookup('file', generator_role_path ~ '/.generator/generator_molecule_workflow_cron') }}"
 
 # Cronjob schedule for Pip cache workflow. By doing it, we don't have to wait
 # for Github Actions to recomplile Ansible every run.

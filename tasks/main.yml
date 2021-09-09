@@ -27,6 +27,13 @@
     path: "{{ item }}"
     state: directory
 
+- name: Generate generator_molecule_workflow_cron file
+  template:
+    src: generator_molecule_workflow_cron.j2
+    dest: "{{ generator_role_path }}/.generator/generator_molecule_workflow_cron"
+    # Do not overwrite if it already exists
+    force: false
+
 - name: Slurp files for README
   block:
     - name: Slurp defaults/main.yml

@@ -28,6 +28,9 @@
     state: directory
 
 - name: Generate generator_molecule_workflow_cron file
+  when: (generator_molecule_workflow_cron_random) or
+        (generator_molecule_workflow_cron_random is defined and
+        generator_molecule_workflow_cron_random | bool)
   ansible.builtin.template:
     src: generator_molecule_workflow_cron.j2
     dest: "{{ generator_role_path }}/.generator/generator_molecule_workflow_cron"

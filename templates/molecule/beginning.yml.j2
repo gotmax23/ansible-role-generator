@@ -12,7 +12,7 @@ lint: |
   yamllint .
   ansible-lint
 driver:
-{{ _driver | to_nice_yaml | indent(width=2, first=true) }}
+{{ _driver | to_nice_yaml(indent=2) | indent(width=2, first=true) }}
 {#
 # vim: set filetype=yaml.jinja2:
 #}

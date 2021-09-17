@@ -1,6 +1,7 @@
+{% set _driver = molecule_file.driver | default(generator_molecule_default_driver) %}
     command: ""
     pre_build_image: true
-{% if molecule_file.driver is defined and molecule_file.driver == "docker" %}
+{% if _driver.name == "docker" %}
     tmpfs:
       - /run
       - /run/lock

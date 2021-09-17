@@ -12,12 +12,23 @@ generator_molecule_scenarios:
     galaxy_force: "true"
   - name: all-docker
     format: all
-    driver: docker
+    driver: { name: docker }
     galaxy_force: "false"
   - name: single-docker
     format: single
-    driver: docker
+    driver: { name: docker }
     galaxy_force: "true"
+  - name: localhost
+    format: localhost
+    galaxy_force: "false"
+    driver:
+      name: delegated
+      options:
+        managed: False
+        ansible_connection_options:
+          ansible_connection: local
+
+generator_molecule_default_driver: { name: podman }
 
 generator_distribution_version_mapping:
   Archlinux:

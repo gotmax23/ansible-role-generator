@@ -1,0 +1,9 @@
+---
+{{ ansible_managed | comment }}
+{% include 'molecule/beginning.yml.j2' %}
+platforms:
+  - name: "{{ generator_role_name }}-${MOLECULE_SCENARIO_NAME}-${TOX_ENVNAME}"
+{% include 'molecule/end.yml.j2' %}
+{#
+# vim: set filetype=yaml.jinja2:
+#}

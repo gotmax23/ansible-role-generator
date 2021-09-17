@@ -38,6 +38,7 @@ generator_distribution_version_mapping:
     all:
       - buster
       - bullseye
+      - bookworm
   EL:
     all:
       - 7

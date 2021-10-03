@@ -17,7 +17,7 @@ generator_generate_molecule_files: true
 generator_molecule_default_scenario: all
 
 # Set default image and tag for `single` molecule scenario
-generator_default_docker_image: debian
+generator_default_docker_image: fedora
 generator_default_docker_tag: latest
 
 # Skip Enterprise Linux 7 on `all` molecule scenario.

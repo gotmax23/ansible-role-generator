@@ -1,4 +1,15 @@
 ---
+- name: Check if requirements.yml is present
+  register: requirements_stat
+  ansible.builtin.stat:
+    path: "{{ generator_role_path }}/requirements.yml"
+
+- name: Include variables from requirements.yml
+  when: requirements_stat.stat.exists | bool
+  ansible.builtin.include_vars:
+    file: "{{ generator_role_path }}/requirements.yml"
+    name: requirements
+
 - name: Include variables from meta/main.yml
   ansible.builtin.include_vars:
     file: "{{ generator_role_path }}/meta/main.yml"
@@ -28,9 +39,9 @@
     state: directory
 
 - name: Generate generator_molecule_workflow_cron file
-  when: (generator_molecule_workflow_cron_random) or
-        (generator_molecule_workflow_cron_random is defined and
-        generator_molecule_workflow_cron_random | bool)
+  when:
+    - generator_molecule_workflow_cron_random is defined
+    - generator_molecule_workflow_cron_random | bool
   ansible.builtin.template:
     src: generator_molecule_workflow_cron.j2
     dest: "{{ generator_role_path }}/.generator/generator_molecule_workflow_cron"
@@ -71,23 +82,16 @@
       ansible.builtin.slurp:
         src: "{{ generator_role_path }}/.generator/links.md"
 
-    - name: Check for install_methods template
-      register: generator_install_methods
-      ansible.builtin.stat:
+    - name: Slurp install_methods
+      register: _generator_install_methods
+      ansible.builtin.slurp:
         path: "{{ generator_role_path }}/.generator/install_methods.md"
 
-- name: Generate README
-  block:
-    - name: Copy README template if needed
-      when: generator_copy_readme_template | bool
-      ansible.builtin.copy:
-        src: templates/README.md.j2
-        dest: "{{ generator_role_path }}/.generator/README.md.j2"
-
-    - name: Template README
-      ansible.builtin.template:
-        src: "{{ generator_role_path }}/.generator/README.md.j2"
-        dest: "{{ generator_role_path }}/README.md"
+    - name: Slurp requirements.yml
+      when: requirements_stat.stat.exists | bool
+      register: _generator_requirements
+      ansible.builtin.slurp:
+        path: "{{ generator_role_path }}/requirements.yml"
 
 - name: Copy default files
   when:
@@ -110,11 +114,6 @@
       ansible.builtin.file:
         path: "{{ generator_role_path }}/{{ item['dest'] }}"
         state: absent
-
-- name: Check if requirements.yml is present
-  register: requirements_stat
-  ansible.builtin.stat:
-    path: "{{ generator_role_path }}/requirements.yml"
 
 - name: Generate molecule files
   when: generator_generate_molecule_files | bool

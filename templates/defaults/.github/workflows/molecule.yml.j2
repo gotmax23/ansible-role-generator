@@ -115,7 +115,7 @@ jobs:
           sleep 1
 {% if generator_molecule_wflow_test.steps is defined %}
 {{ generator_molecule_wflow_test.steps | to_nice_yaml(indent=2) | indent(width=6, first=true) }}
-{% endif %}
+{%- endif %}
 {% if generator_molecule_wflow_test.skip_test_step is defined and generator_molecule_wflow_test.skip_test_step | bool %}
 {% else %}
       - name: Run molecule test

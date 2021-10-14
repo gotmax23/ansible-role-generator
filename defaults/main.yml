@@ -41,11 +41,6 @@ generator_pip_cache_workflow_cron: "0 0 * * 0"
 # 2. This allows us to keep the main template and role specific Jinja2 includes in
 # the same directory.
 
-# Whether or not to overwrite "{{ role_path }}/.generator/README.md.j2" file
-# before creating the README. When set to false, this allows us to make
-# role-specific modifications.
-generator_copy_readme_template: true
-
 generator_example_playbook_path: "{{ generator_role_path }}/.generator/playbook.yml"
 
 generator_epel_required: false
@@ -76,6 +71,7 @@ generator_files:
   - dest: .ansible-lint
   - dest: .yamllint
   - dest: .github/settings.yml
+  - dest: README.md
 
 # This role creates a `.github/settings.yml` file for use with the
 # [Probot Settings plugin](https://github.com/probot/settings) to set the description,
@@ -83,3 +79,5 @@ generator_files:
 # from each target role's `meta/main.yml`, it uses these default tags.
 
 generator_default_tags: [ "ansible", "molecule", "ansible-role", "role" ]
+
+generator_role_beta: true

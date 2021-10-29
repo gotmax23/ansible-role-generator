@@ -71,7 +71,10 @@ generator_files:
   - dest: .ansible-lint
   - dest: .yamllint
   - dest: .github/settings.yml
-  - dest: README.md
+  - src: templates/README/README.md.j2
+    dest: README.md
+  - dest: .generator/README.md.j2
+    state: absent
 
 # This role creates a `.github/settings.yml` file for use with the
 # [Probot Settings plugin](https://github.com/probot/settings) to set the description,

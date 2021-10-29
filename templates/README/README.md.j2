@@ -1,0 +1,56 @@
+{% macro _platform_versions(platform) %}
+{% if platform.versions[0] == "all" %}
+{{ generator_distribution_version_mapping[platform.name]["all"] | join(', ') }}
+{% else %}
+{{ platform.versions | join(', ') }}
+{%- endif %}
+{% endmacro %}
+{% include 'role_badges_top.md.j2' %}
+
+
+{{ meta.galaxy_info.description }}
+
+{% if generator_role_beta | bool %}
+## Beta Warning
+**This role is currently in beta and is not intended for production use. Breaking changes may occur between releases, so please make sure to read the release notes.**
+{% endif %}
+{% include 'role_requirements.md.j2' %}
+
+## Role Variables
+
+{% if _generator_install_methods.content is defined %}
+{{ _generator_install_methods.content | b64decode }}
+----
+
+{% endif %}
+Here are this role's variables and their default values, as set in [`defaults/main.yml`][link-defaults]. If you'd like, you may change them to customize this role's behavior.
+
+``` yaml
+{{ generator_defaults.content | b64decode }}
+```
+{% if generator_links_md.content is defined %}
+
+{{ generator_links_md.content | b64decode }}
+{% endif %}
+
+## Example Playbook
+``` yaml
+{{ generator_example_playbook.content | b64decode }}
+```
+
+## Compatibility
+This role is compatible with the following distros:
+
+|distro|versions|
+|------|--------|
+{% for platform in meta.galaxy_info.platforms %}
+|{{ platform.name }}|{{ _platform_versions(platform) | regex_replace("\n")-}}|
+{% endfor %}
+
+## License
+[MIT][link-license]
+
+## Author
+Maxwell G (@gotmax23)
+
+{% include 'role_badges_bottom.md.j2' %}

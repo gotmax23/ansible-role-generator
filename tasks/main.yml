@@ -83,6 +83,7 @@
         src: "{{ generator_role_path }}/.generator/links.md"
 
     - name: Slurp install_methods
+      failed_when: false
       register: _generator_install_methods
       ansible.builtin.slurp:
         path: "{{ generator_role_path }}/.generator/install_methods.md"

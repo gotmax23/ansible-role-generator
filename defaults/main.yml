@@ -67,7 +67,6 @@ generator_files:
   - dest: LICENSE
   - dest: .github/workflows/molecule.yml
   - dest: .github/workflows/galaxy.yml
-  - dest: .github/workflows/pip_cache.yml
   - dest: .ansible-lint
   - dest: .yamllint
   - dest: .github/settings.yml

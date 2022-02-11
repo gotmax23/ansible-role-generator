@@ -15,12 +15,18 @@ name: Lint code and run Molecule tests
   schedule:
     - cron: "{{ generator_molecule_workflow_cron }}"
 
+defaults:
+  run:
+    working-directory: {{ generator_namespace }}.{{ generator_role_name }}
+
 jobs:
   lint:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Git Repo
         uses: actions/checkout@v2
+        with:
+          path: {{ generator_namespace }}.{{ generator_role_name }}
 
       - name: "Set up Python 3.9"
         uses: actions/setup-python@v2
@@ -90,6 +96,8 @@ jobs:
     steps:
       - name: Checkout Git Repo
         uses: actions/checkout@v2
+        with:
+          path: {{ generator_namespace }}.{{ generator_role_name }}
 
       - name: "Set up Python 3.9"
         uses: actions/setup-python@v2

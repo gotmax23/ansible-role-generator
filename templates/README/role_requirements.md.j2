@@ -13,23 +13,34 @@ This role depends on certain collections that are not included in ansible-core.
 This role's [example playbook](#example-playbook) requires another role to prepare the target system.
 {%   endif %}
 
-To install this role's requirements, create a `requirements.yml` file with the contents below and run the following commands:
+To install this role's requirements, create a `requirements.yml` file with the following contents:
+
+``` yaml
+{{ _generator_requirements.content | b64decode }}
+```
+
+Then, if you are using ansible-base/ansible-core 2.10 or later, run this command.
 
 ``` shell
-# ansible-base/ansible-core 2.10 and above
 ansible-galaxy install -r requirements.yml
+```
 
-# ansible 2.9
+{%   if requirements.collections is defined and requirements.roles is defined %}
+{% set _this = "these" %}
+{% set _command = "commands" %}
+{%   else %}
+{% set _this = "this" %}
+{% set _command = "command" %}
+{%  endif %}
+
+If you are still using Ansible 2.9, run {{ _this }} {{_command }}, instead.
+
+``` shell
 {%   if requirements.collections is defined %}
 ansible-galaxy collection install -r requirements.yml
 {%   endif %}
 {%   if requirements.roles is defined %}
 ansible-galaxy role install -r requirements.yml
 {%   endif %}
-```
-
-``` yaml
-# requirements.yml
-{{ _generator_requirements.content | b64decode }}
 ```
 {% endif %}

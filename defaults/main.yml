@@ -83,3 +83,5 @@ generator_files:
 generator_default_tags: [ "ansible", "molecule", "ansible-role", "role" ]
 
 generator_role_beta: true
+
+generator_molecule_workflow_cron_random: true

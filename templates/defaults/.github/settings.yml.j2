@@ -3,5 +3,5 @@
 {{ ansible_managed | comment }}
 repository:
   description: {{ generator_role_description | default(meta.galaxy_info.description) }}
-  homepage: "https://galaxy.ansible.com/{{ generator_namespace }}/{{ generator_role_name }}"
+  homepage: https://galaxy.ansible.com/{{ generator_namespace }}/{{ generator_role_name }}
   topics: {% for tag in tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}

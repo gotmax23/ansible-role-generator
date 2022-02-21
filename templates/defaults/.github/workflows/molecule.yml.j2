@@ -12,8 +12,10 @@ name: Lint code and run Molecule tests
       - README.md
       - .github/settings.yml
   workflow_dispatch:
+{% if generator_molecule_workflow_cron | length > 0 %}
   schedule:
     - cron: "{{ generator_molecule_workflow_cron }}"
+{% endif %}
 
 defaults:
   run:
